@@ -1,4 +1,4 @@
-title:  Akniyet
+title: Akniyet Korea
 theme: minima
 
 plugins:
@@ -10,18 +10,12 @@ header_pages:
   - pikirler.md
   - kurstar.md
   - jazbalar.md
-  - audiokitaptar.md
-  - problems.md
   - projects.md
 
 permalink: /:categories/:title
 
 collections:
   courses:
-    output: true
-  audiobooks:
-    output: true
-  esepter:
     output: true
   jobalar:
     output: true
@@ -34,10 +28,10 @@ minima:
     # solarized-light	   Light variant of solarized color scheme.
     # solarized-dark	   Dark variant of solarized color scheme.
     # solarized	         Adaptive skin for solarized color scheme skins.
-  skin: classic
+  skin: solarized
   
   social_links:
-    - { platform: rss,       user_url: "https://t.me/Uzdik_BILIM", title: "Telegram"  }  
-    - { platform: youtube,        user_url: "https://www.youtube.com/Uzdik" }
-    - { platform: instagram,      user_url: "https://www.instagram.com/uzdik.bilim" }
-    - { platform: facebook,       user_url: "https://www.facebook.com/uzdik.bilim" }
+    - { platform: rss,       user_url: "https://t.me/akniyet.korea", title: "Telegram"  }  
+    - { platform: youtube,        user_url: "https://www.youtube.com/akniyet_korea" }
+    - { platform: instagram,      user_url: "https://www.instagram.com/akniyet_korea" }
+    - { platform: facebook,       user_url: "https://www.facebook.com/akniyet.sembek" }
