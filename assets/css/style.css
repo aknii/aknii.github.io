@@ -811,8 +811,8 @@ details {
 
 .center-user {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   background-image: url('/assets/img/beauty.png');
   background-size: cover;
   border-radius: 50%;
@@ -881,43 +881,5 @@ details {
         border-radius: 5px;
         cursor: pointer;
     }
-.audiocontrols {
-    text-align: left;
-    margin-bottom: 20px;
-}
 
-.audiocontrols input[type='button'] {
-    background-color: #333; /* Dark background color */
-    color: #fff; /* White text color */
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px;
-}
 
-.audiocontrols input[type='button']:hover {
-    background-color: #555; /* Darker background color on hover */
-}
-
-/* General Styles for Problem Statement */
-.problem-statement .header {
-    margin-bottom: 1em;
-    text-align: center;
-}
-.problem-statement .section-title,
-.problem-statement .time-limit, 
-.problem-statement .memory-limit{
-    font-weight: bold;
-}
-
-.problem-statement .sample-test {
-    border: 1px solid #ddd;
-    padding: 0.5em;
-    border-radius: 4px;
-    margin-bottom: 1em;
-}
-
-.problem-statement .note p {
-    margin: 0.5em 0;
-}
