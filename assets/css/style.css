@@ -811,9 +811,9 @@ details {
 
 .center-user {
   position: absolute;
-  width: 150px;
-  height: 150px;
-  background-image: url('/assets/img/beauty.png');
+  width: 100px;
+  height: 100px;
+  background-image: url('/assets/img/beauty0.png');
   background-size: cover;
   border-radius: 50%;
   left: 50%;
