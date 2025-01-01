@@ -8,8 +8,8 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   const centerUser = document.querySelector('.center-user');
 
   // Define oval parameters
-  const ovalWidth = 600; // Width of the oval
-  const ovalHeight = 400; // Height of the oval
+  const ovalWidth = 500; // Width of the oval
+  const ovalHeight = 500; // Height of the oval
   const angleOffset = Math.PI / 8; // Offset for starting angle
 
   // Array to store rotation intervals
@@ -26,7 +26,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
     const centerY = centerUser.offsetTop + centerUser.offsetHeight / 2 ;
     const angle = angleOffset + (index / ideas.length) * (2 * Math.PI - angleOffset * 2);
     // Adjust radius for distance from center
-    let radius = ovalWidth / 2 + 250; //250 pixels further from the center
+    let radius = ovalWidth / 2 - 250; //250 pixels further from the center
 
     // Gradually reduce radius if close to the center
     radius -= Math.min(time / 1000, 5) * 40; // Reduce radius by up to 40 pixels per second
