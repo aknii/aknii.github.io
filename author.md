@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Авторы
+title: Мен туралы
 permalink: /author/
 ---
 <details>
