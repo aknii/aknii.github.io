@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle popup body
     popupHeader.addEventListener('click', () => {
-        if (popupBody.style.display === 'none' || popupBody.style.display === '') {
+        if (popupBody.style.display === 'none') {
             popupBody.style.display = 'flex';
             document.getElementById('telegram-popup').style.height = 'auto';
         } else {
@@ -137,28 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        userInfo.style.display = 'none';
-        chatArea.style.display = 'flex';
+        userInfo.style.display = 'none'; // Hide user info
+        chatArea.style.display = 'flex'; // Show chat area
 
         // Send user info to Telegram
         sendMessage(currentChatId, `Жаңа пайдаланушы: ${userName}, Телефон: ${userPhone}`);
     });
 
     // Send a message
-    async function sendMessage(chatId, message) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: message,
-            }),
-        });
-        return response.ok;
-    }
-
-    // Send a chat message
     sendButton.addEventListener('click', async () => {
         const message = messageInput.value.trim();
         if (!message) return;
@@ -175,6 +161,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!success) alert('Failed to send message.');
     });
 
+    // Send a message to Telegram
+    async function sendMessage(chatId, message) {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: message }),
+        });
+        return response.ok;
+    }
+
     // Update the chat display
     function updateChatDisplay(chatId) {
         chatMessages.innerHTML = '';
@@ -184,8 +181,4 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
-
-
-
-
 
