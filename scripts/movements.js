@@ -92,6 +92,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
 }
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
     const popupBody = document.getElementById('telegram-body');
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls';
     const TELEGRAM_CHAT_ID = '1231251707'; // Replace with your chat ID
+    let lastUpdateId = 0;
 
     // Toggle popup visibility
     popupHeader.addEventListener('click', () => {
@@ -130,4 +132,28 @@ document.addEventListener('DOMContentLoaded', () => {
             chatMessages.innerHTML += `<div style="color: red;">Failed to send message.</div>`;
         }
     });
+
+    // Fetch new messages from Telegram
+    async function fetchMessages() {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.ok) {
+            data.result.forEach((update) => {
+                if (update.message && update.message.chat.id === TELEGRAM_CHAT_ID) {
+                    const text = update.message.text;
+                    chatMessages.innerHTML += `<div>Bot: ${text}</div>`;
+                    lastUpdateId = update.update_id;
+                }
+            });
+
+            // Scroll to the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    // Poll for new messages every 2 seconds
+    setInterval(fetchMessages, 2000);
 });
+
