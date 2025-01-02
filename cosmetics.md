@@ -4,12 +4,6 @@ title: "Косметика"
 permalink: /cosmetics/
 ---
 
----
-layout: page
-title: "Косметика"
-permalink: /cosmetics/
----
-
 <div class="slideshow-container">
   <div class="slide fade">
     <img src="/assets/images/cosmetics1.jpg" alt="Product 1">
