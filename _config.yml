@@ -19,6 +19,9 @@ collections:
     output: true
   jobalar:
     output: true
+  cosmetics:
+    output: true
+
 
 minima:
   # Minima skin selection.
