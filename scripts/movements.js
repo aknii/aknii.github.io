@@ -93,92 +93,111 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
 
 
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
     const popupBody = document.getElementById('telegram-body');
-    const userInfo = document.getElementById('user-info');
-    const chatArea = document.getElementById('chat-area');
-    const userNameInput = document.getElementById('user-name');
-    const userPhoneInput = document.getElementById('user-phone');
-    const userSubmitButton = document.getElementById('user-submit');
+    const chatThreads = document.getElementById('chat-threads');
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('telegram-message');
     const sendButton = document.getElementById('telegram-send');
 
-    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls';
-    const TELEGRAM_CHAT_ID = '-1002463115933';
+    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls'; 
+    const TELEGRAM_CHAT_ID = '-1002463115933'; 
 
-    let userName = '';
-    let userPhone = '';
-    let chatsByDeviceID = {};
-    let currentChatId = TELEGRAM_CHAT_ID;
+    let chatsByDeviceID = {}; // Structure: { chatId: { deviceID: messages } }
+    let currentChatId = TELEGRAM_CHAT_ID; 
     let lastUpdateId = 0;
-
-    // Toggle popup body
+  
     popupHeader.addEventListener('click', () => {
-        if (popupBody.style.display === 'none') {
-            popupBody.style.display = 'flex';
-            document.getElementById('telegram-popup').style.height = 'auto';
+        if (popupBody.style.display === 'none' || popupBody.style.display === '') {
+            popupBody.style.display = 'flex';  // Show the body
+            document.getElementById('telegram-popup').style.height = '250px'; // Expand popup to full height
         } else {
-            popupBody.style.display = 'none';
-            document.getElementById('telegram-popup').style.height = '40px';
+            popupBody.style.display = 'none'; // Hide the body
+            document.getElementById('telegram-popup').style.height = '40px'; // Only show header
         }
-    });
-
-    // Handle user info submission
-    userSubmitButton.addEventListener('click', () => {
-        userName = userNameInput.value.trim();
-        userPhone = userPhoneInput.value.trim();
-
-        if (!userName || !userPhone) {
-            alert('Есім мен телефон нөмірін толтырыңыз.');
-            return;
-        }
-
-        userInfo.style.display = 'none'; // Hide user info
-        chatArea.style.display = 'flex'; // Show chat area
-
-        // Send user info to Telegram
-        sendMessage(currentChatId, `Жаңа пайдаланушы: ${userName}, Телефон: ${userPhone}`);
-    });
-
-    // Send a message
-    sendButton.addEventListener('click', async () => {
-        const message = messageInput.value.trim();
-        if (!message) return;
-
-        chatsByDeviceID[currentChatId] = chatsByDeviceID[currentChatId] || [];
-        chatsByDeviceID[currentChatId].push({ sender: 'Сіз', text: message });
-        updateChatDisplay(currentChatId);
-        messageInput.value = '';
-
-        const success = await sendMessage(
-            currentChatId,
-            `Есім: ${userName}, Телефон: ${userPhone}\nХабарлама: ${message}`
-        );
-        if (!success) alert('Failed to send message.');
     });
 
     // Send a message to Telegram
     async function sendMessage(chatId, message) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const url = https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage;
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: message }),
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message, // Sending simple message
+            }),
         });
         return response.ok;
     }
 
-    // Update the chat display
+    // When sending a message
+    sendButton.addEventListener('click', async () => {
+        const message = messageInput.value.trim();
+        if (!message || !currentChatId) return;
+
+        // Store the message
+        if (!chatsByDeviceID[currentChatId]) {
+            chatsByDeviceID[currentChatId] = [];
+        }
+
+        chatsByDeviceID[currentChatId].push({ sender: 'Сіз', text: message });
+        updateChatDisplay(currentChatId);
+        messageInput.value = '';
+
+        const success = await sendMessage(currentChatId, message); // Send message without deviceID
+        if (!success) {
+            alert('Failed to send message.');
+        }
+    });
+
+    // Fetch new messages from Telegram
+    async function fetchMessages() {
+        const url = https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1};
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to fetch messages');
+            }
+            const data = await response.json();
+
+            if (data.ok) {
+                data.result.forEach((update) => {
+                    const chatId = update.message.chat.id;
+                    const text = update.message.text;
+
+                    if (!chatsByDeviceID[chatId]) {
+                        chatsByDeviceID[chatId] = [];
+                    }
+
+                    // Store the received message
+                    chatsByDeviceID[chatId].push({ sender: 'Bot', text });
+
+                    if (currentChatId === chatId) {
+                        updateChatDisplay(chatId);
+                    }
+
+                    lastUpdateId = update.update_id;
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+    // Update the chat display for a specific chatId
     function updateChatDisplay(chatId) {
         chatMessages.innerHTML = '';
-        (chatsByDeviceID[chatId] || []).forEach((msg) => {
-            chatMessages.innerHTML += `<div><strong>${msg.sender}:</strong> ${msg.text}</div>`;
+        const messages = chatsByDeviceID[chatId] || [];
+        messages.forEach((msg) => {
+            chatMessages.innerHTML += <div><strong>${msg.sender}:</strong> ${msg.text}</div>;
         });
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
+    // Poll for new messages every 2 seconds
+    setInterval(fetchMessages, 2000);
 });
+
 
