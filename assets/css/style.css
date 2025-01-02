@@ -791,7 +791,7 @@ details {
   position: absolute;
   width: 100px;
   height: 20px;
-  background-color: #f990ca;
+  background-color: #90CAF9;
   border-radius: 20px;
   padding: 10px;
   font-family: Arial, sans-serif;
@@ -808,7 +808,7 @@ details {
   position: absolute;
   width: 200px;
   height: 200px;
-  background-image: url('/assets/img/beauty.png');
+  background-image: url('/assets/img/beauty0.png');
   background-size: cover;
   border-radius: 50%;
   left: 50%;
@@ -821,6 +821,7 @@ details {
 .center-user:hover {
   transform: translate(-50%, -50%) scale(1.2);
 }
+
 
   .container {
         display: flex;
