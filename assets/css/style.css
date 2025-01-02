@@ -848,6 +848,33 @@ details {
 }
 
 #telegram-body {
+    display: flex;
+}
+
+#chat-list {
+    width: 30%;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+}
+
+#chat-threads {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#chat-threads li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+#chat-threads li:hover {
+    background: #f0f0f0;
+}
+
+#chat-area {
+    width: 70%;
     padding: 10px;
 }
 
