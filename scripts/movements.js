@@ -8,21 +8,21 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   const ovalHeight = 500;
   const angleOffset = Math.PI / 8;
 
-  let rotationIntervals = []; // Store intervals for each idea
+  const rotationIntervals = new Map(); // Map to store intervals for each cloud
 
   function removeRotationIntervals() {
     rotationIntervals.forEach(interval => clearInterval(interval));
-    rotationIntervals = []; // Clear the array
+    rotationIntervals.clear(); // Reset the map
   }
 
   function calculateIdeaPosition(index, time) {
     const centerX = window.innerWidth / 2; // Use window center
     const centerY = window.innerHeight / 2; // Use window center
     const angle = angleOffset + (index / ideas.length) * (2 * Math.PI - angleOffset * 2);
-    let radius = ovalWidth / 2 + 250;
+    let radius = ovalWidth / 2 + 350;
 
     radius -= Math.min(time / 1000, 5) * 40; // Gradual radius adjustment
-    radius = Math.max(radius, 250); // Minimum radius
+    radius = Math.max(radius, 350); // Minimum radius
 
     const x = centerX + radius * Math.cos(angle + time / 1000 + index * 0.1);
     const y = centerY + (ovalHeight / 2) * Math.sin(angle + time / 1000 + index * 0.1);
@@ -38,8 +38,12 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
       cloud.style.top = `${y}px`;
     };
 
-    const rotationInterval = setInterval(rotateCloud, 50);
-    rotationIntervals[index] = rotationInterval;
+    if (rotationIntervals.has(cloud)) {
+      clearInterval(rotationIntervals.get(cloud)); // Clear any existing interval
+    }
+
+    const interval = setInterval(rotateCloud, 50);
+    rotationIntervals.set(cloud, interval); // Store the interval in the map
   }
 
   ideas.forEach((idea, index) => {
@@ -64,7 +68,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
     });
 
     cloud.addEventListener('mouseenter', () => {
-      clearInterval(rotationIntervals[index]);
+      clearInterval(rotationIntervals.get(cloud));
     });
 
     cloud.addEventListener('mouseleave', () => {
@@ -79,8 +83,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   centerUser.addEventListener('mouseenter', removeRotationIntervals);
 
   centerUser.addEventListener('mouseleave', () => {
-    ideas.forEach((_, index) => {
-      const cloud = document.querySelector(`.idea:nth-child(${index + 1})`);
+    document.querySelectorAll('.idea').forEach((cloud, index) => {
       startRotation(cloud, index); // Restart rotation for each cloud
     });
   });
