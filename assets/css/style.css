@@ -838,8 +838,8 @@ details {
 }
 
 #telegram-header {
-    background-color: #0078d4;
-    color: white;
+    background-color: #F990CA;
+    color: black;
     padding: 10px;
     text-align: center;
     cursor: pointer;
@@ -893,8 +893,8 @@ details {
 
 #telegram-send {
     padding: 10px;
-    background-color: #0078d4;
-    color: white;
+    background-color: #F990CA;
+    color: black;
     border: none;
     cursor: pointer;
     border-radius: 4px;
