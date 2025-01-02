@@ -6,11 +6,11 @@ plugins:
   - jekyll-seo-tag
   
 header_pages:
-  - author.md
   - cosmetics.md
   - kurstar.md
   - jazbalar.md
   - projects.md
+  - author.md
 
 permalink: /:categories/:title
 
