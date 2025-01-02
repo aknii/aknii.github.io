@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     popupHeader.addEventListener('click', () => {
         if (popupBody.style.display === 'none' || popupBody.style.display === '') {
             popupBody.style.display = 'flex';  // Show the body
-            document.getElementById('telegram-popup').style.height = '300px'; // Expand popup to full height
+            document.getElementById('telegram-popup').style.height = '250px'; // Expand popup to full height
         } else {
             popupBody.style.display = 'none'; // Hide the body
             document.getElementById('telegram-popup').style.height = '40px'; // Only show header
