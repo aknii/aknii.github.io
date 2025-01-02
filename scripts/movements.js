@@ -1,4 +1,3 @@
-// Check if the current page is the index page
 if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
   const ideas = ['Корей гранты', 'TOPIK емтиханы', 'Косметика', 'Пікірлер', 'Мен туралы', 'Курстар', 'Посттар', 'Жобалар'];
   const links = ['gks', 'topik', 'cosmetology', 'feedbacks', 'author', 'courses', 'posts', 'jobalar'];
@@ -9,10 +8,11 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   const ovalHeight = 500;
   const angleOffset = Math.PI / 8;
 
-  const rotationIntervals = [];
+  let rotationIntervals = []; // Store intervals for each idea
 
   function removeRotationIntervals() {
     rotationIntervals.forEach(interval => clearInterval(interval));
+    rotationIntervals = []; // Clear the array
   }
 
   function calculateIdeaPosition(index, time) {
@@ -30,18 +30,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
     return { x, y };
   }
 
-  ideas.forEach((idea, index) => {
-    const cloud = document.createElement('div');
-    cloud.classList.add('idea');
-    cloud.textContent = idea;
-    cloud.setAttribute('data-link', links[index]);
-    document.body.appendChild(cloud);
-
-    const randomX = Math.random() * window.innerWidth;
-    const randomY = Math.random() * window.innerHeight;
-    cloud.style.left = `${randomX}px`;
-    cloud.style.top = `${randomY}px`;
-
+  function startRotation(cloud, index) {
     const rotateCloud = () => {
       const time = Date.now();
       const { x, y } = calculateIdeaPosition(index, time);
@@ -49,8 +38,25 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
       cloud.style.top = `${y}px`;
     };
 
-    let rotationInterval = setInterval(rotateCloud, 50);
-    rotationIntervals.push(rotationInterval);
+    const rotationInterval = setInterval(rotateCloud, 50);
+    rotationIntervals[index] = rotationInterval;
+  }
+
+  ideas.forEach((idea, index) => {
+    const cloud = document.createElement('div');
+    cloud.classList.add('idea');
+    cloud.textContent = idea;
+    cloud.setAttribute('data-link', links[index]);
+    document.body.appendChild(cloud);
+
+    // Random initial position
+    const randomX = Math.random() * window.innerWidth;
+    const randomY = Math.random() * window.innerHeight;
+    cloud.style.left = `${randomX}px`;
+    cloud.style.top = `${randomY}px`;
+
+    // Start rotation
+    startRotation(cloud, index);
 
     cloud.addEventListener('click', () => {
       const link = cloud.getAttribute('data-link');
@@ -58,12 +64,11 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
     });
 
     cloud.addEventListener('mouseenter', () => {
-      clearInterval(rotationInterval);
+      clearInterval(rotationIntervals[index]);
     });
 
     cloud.addEventListener('mouseleave', () => {
-      rotationInterval = setInterval(rotateCloud, 50);
-      rotationIntervals.push(rotationInterval);
+      startRotation(cloud, index);
     });
   });
 
@@ -76,13 +81,7 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   centerUser.addEventListener('mouseleave', () => {
     ideas.forEach((_, index) => {
       const cloud = document.querySelector(`.idea:nth-child(${index + 1})`);
-      const rotationInterval = setInterval(() => {
-        const time = Date.now();
-        const { x, y } = calculateIdeaPosition(index, time);
-        cloud.style.left = `${x}px`;
-        cloud.style.top = `${y}px`;
-      }, 50);
-      rotationIntervals[index] = rotationInterval;
+      startRotation(cloud, index); // Restart rotation for each cloud
     });
   });
 
