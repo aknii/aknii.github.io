@@ -102,16 +102,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('telegram-message');
     const sendButton = document.getElementById('telegram-send');
 
-    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls'; // Your bot token
-    const TELEGRAM_CHAT_ID = '-1002463115933'; // Your chat ID
+    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls'; 
+    const TELEGRAM_CHAT_ID = '-1002463115933'; 
 
     let chatsByDeviceID = {}; // Structure: { chatId: { deviceID: messages } }
-    let currentChatId = TELEGRAM_CHAT_ID; // Directly set the chat ID for testing purposes
+    let currentChatId = TELEGRAM_CHAT_ID; 
     let lastUpdateId = 0;
-
-    // Toggle popup visibility
+  
     popupHeader.addEventListener('click', () => {
-        popupBody.style.display = popupBody.style.display === 'none' ? 'flex' : 'none';
+        if (popupBody.style.display === 'none' || popupBody.style.display === '') {
+            popupBody.style.display = 'flex';  // Show the body
+            document.getElementById('telegram-popup').style.height = '400px'; // Expand popup to full height
+        } else {
+            popupBody.style.display = 'none'; // Hide the body
+            document.getElementById('telegram-popup').style.height = '40px'; // Only show header
+        }
     });
 
     // Send a message to Telegram
