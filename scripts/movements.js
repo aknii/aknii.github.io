@@ -91,7 +91,6 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   window.addEventListener('beforeunload', removeRotationIntervals);
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
     const popupBody = document.getElementById('telegram-body');
@@ -100,12 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('telegram-message');
     const sendButton = document.getElementById('telegram-send');
 
-    
-    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls';
-    const TELEGRAM_CHAT_ID = '1231251707'; // Replace with your chat ID
-  
-    let chats = {}; // Object to store messages for each chat
-    let currentChatId = null; // The chat being displayed
+    const TELEGRAM_BOT_TOKEN = 'MYBOTTOKEN'; // Your bot token
+    const TELEGRAM_CHAT_ID = '-10000123456789'; // Your chat ID
+
+    const deviceID = 'some_unique_device_id'; // Set your deviceID here
+    let chatsByDeviceID = {}; // Structure: { chatId: { deviceID: messages } }
+    let currentChatId = null;
+    let currentDeviceID = deviceID; // Set initial deviceID
     let lastUpdateId = 0;
 
     // Toggle popup visibility
@@ -114,25 +114,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Send a message to Telegram
-    async function sendMessage(chatId, message) {
+    async function sendMessage(chatId, message, deviceID) {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: message }),
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: `${deviceID}: ${message}`, // Include deviceID in the message
+            }),
         });
         return response.ok;
     }
 
+    // When sending a message
     sendButton.addEventListener('click', async () => {
         const message = messageInput.value.trim();
         if (!message || !currentChatId) return;
 
-        chats[currentChatId].push({ sender: 'You', text: message });
-        updateChatDisplay(currentChatId);
+        // Store the message under the specific deviceID
+        if (!chatsByDeviceID[currentChatId]) {
+            chatsByDeviceID[currentChatId] = {};
+        }
+        if (!chatsByDeviceID[currentChatId][currentDeviceID]) {
+            chatsByDeviceID[currentChatId][currentDeviceID] = [];
+        }
+        chatsByDeviceID[currentChatId][currentDeviceID].push({ sender: currentDeviceID, text: message });
+
+        updateChatDisplay(currentChatId, currentDeviceID);
         messageInput.value = '';
 
-        const success = await sendMessage(currentChatId, message);
+        const success = await sendMessage(currentChatId, message, currentDeviceID); // Pass deviceID to sendMessage
         if (!success) {
             alert('Failed to send message.');
         }
@@ -148,15 +160,21 @@ document.addEventListener('DOMContentLoaded', () => {
             data.result.forEach((update) => {
                 const chatId = update.message.chat.id;
                 const text = update.message.text;
+                const senderDeviceID = extractDeviceID(text); // Function to extract deviceID from message
 
-                if (!chats[chatId]) {
-                    chats[chatId] = [];
-                    addChatThread(chatId);
+                if (!chatsByDeviceID[chatId]) {
+                    chatsByDeviceID[chatId] = {};
                 }
 
-                chats[chatId].push({ sender: 'Bot', text });
-                if (currentChatId === chatId) {
-                    updateChatDisplay(chatId);
+                if (!chatsByDeviceID[chatId][senderDeviceID]) {
+                    chatsByDeviceID[chatId][senderDeviceID] = [];
+                }
+
+                // Store the received message under the deviceID
+                chatsByDeviceID[chatId][senderDeviceID].push({ sender: senderDeviceID, text });
+
+                if (currentChatId === chatId && currentDeviceID === senderDeviceID) {
+                    updateChatDisplay(chatId, senderDeviceID);
                 }
 
                 lastUpdateId = update.update_id;
@@ -164,22 +182,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add a new chat to the chat list
-    function addChatThread(chatId) {
+    // Extract deviceID from message (assuming deviceID is at the beginning)
+    function extractDeviceID(text) {
+        const match = text.match(/^(\S+):/); // Assuming deviceID is the first word in the message
+        return match ? match[1] : null;
+    }
+
+    // Add a new chat to the chat list for a specific deviceID
+    function addChatThread(chatId, deviceID) {
+        if (!chatsByDeviceID[chatId]) {
+            chatsByDeviceID[chatId] = {};
+        }
+        if (!chatsByDeviceID[chatId][deviceID]) {
+            chatsByDeviceID[chatId][deviceID] = [];
+        }
+
         const thread = document.createElement('li');
-        thread.textContent = `Chat ${chatId}`;
+        thread.textContent = `Chat with ${deviceID}`;
         thread.dataset.chatId = chatId;
+        thread.dataset.deviceID = deviceID;
         thread.addEventListener('click', () => {
             currentChatId = chatId;
-            updateChatDisplay(chatId);
+            currentDeviceID = deviceID;
+            updateChatDisplay(chatId, deviceID);
         });
         chatThreads.appendChild(thread);
     }
 
-    // Update the chat area with messages
-    function updateChatDisplay(chatId) {
+    // Update the chat display for a specific chatId and deviceID
+    function updateChatDisplay(chatId, deviceID) {
         chatMessages.innerHTML = '';
-        chats[chatId].forEach((msg) => {
+        const messages = chatsByDeviceID[chatId] ? chatsByDeviceID[chatId][deviceID] || [] : [];
+        messages.forEach((msg) => {
             chatMessages.innerHTML += `<div>${msg.sender}: ${msg.text}</div>`;
         });
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -188,6 +222,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Poll for new messages every 2 seconds
     setInterval(fetchMessages, 2000);
 });
-
-
-
