@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Пікірлер"
+title: "Кері байланыс"
 permalink: /feedbacks/
 ---
 
