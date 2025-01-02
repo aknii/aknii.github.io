@@ -266,7 +266,7 @@ table td {
 }
 
 .site-title {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 300;
     line-height: 54px;
     letter-spacing: -1px;
@@ -275,7 +275,7 @@ table td {
 }
 
 .site-title,.site-title:visited {
-    color: #424242
+    color: #FF1493
 }
 
 .site-nav {
@@ -791,7 +791,7 @@ details {
   position: absolute;
   width: 100px;
   height: 20px;
-  background-color: #f990ca;
+  background-color: #FF1493; /* f990ca; */
   border-radius: 20px;
   padding: 10px;
   font-family: Arial, sans-serif;
