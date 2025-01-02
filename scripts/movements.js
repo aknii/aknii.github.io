@@ -92,44 +92,49 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
 }
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
     const popupBody = document.getElementById('telegram-body');
+    const chatThreads = document.getElementById('chat-threads');
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('telegram-message');
     const sendButton = document.getElementById('telegram-send');
 
+    
     const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls';
     const TELEGRAM_CHAT_ID = '1231251707'; // Replace with your chat ID
+  
+    let chats = {}; // Object to store messages for each chat
+    let currentChatId = null; // The chat being displayed
     let lastUpdateId = 0;
 
     // Toggle popup visibility
     popupHeader.addEventListener('click', () => {
-        popupBody.style.display = popupBody.style.display === 'none' ? 'block' : 'none';
+        popupBody.style.display = popupBody.style.display === 'none' ? 'flex' : 'none';
     });
 
-    // Send message to Telegram
-    async function sendMessage(message) {
+    // Send a message to Telegram
+    async function sendMessage(chatId, message) {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message }),
+            body: JSON.stringify({ chat_id: chatId, text: message }),
         });
         return response.ok;
     }
 
     sendButton.addEventListener('click', async () => {
         const message = messageInput.value.trim();
-        if (!message) return;
+        if (!message || !currentChatId) return;
 
-        chatMessages.innerHTML += `<div>You: ${message}</div>`;
+        chats[currentChatId].push({ sender: 'You', text: message });
+        updateChatDisplay(currentChatId);
         messageInput.value = '';
 
-        const success = await sendMessage(message);
+        const success = await sendMessage(currentChatId, message);
         if (!success) {
-            chatMessages.innerHTML += `<div style="color: red;">Failed to send message.</div>`;
+            alert('Failed to send message.');
         }
     });
 
@@ -141,19 +146,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (data.ok) {
             data.result.forEach((update) => {
-                if (update.message && update.message.chat.id === TELEGRAM_CHAT_ID) {
-                    const text = update.message.text;
-                    chatMessages.innerHTML += `<div>Bot: ${text}</div>`;
-                    lastUpdateId = update.update_id;
-                }
-            });
+                const chatId = update.message.chat.id;
+                const text = update.message.text;
 
-            // Scroll to the latest message
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+                if (!chats[chatId]) {
+                    chats[chatId] = [];
+                    addChatThread(chatId);
+                }
+
+                chats[chatId].push({ sender: 'Bot', text });
+                if (currentChatId === chatId) {
+                    updateChatDisplay(chatId);
+                }
+
+                lastUpdateId = update.update_id;
+            });
         }
+    }
+
+    // Add a new chat to the chat list
+    function addChatThread(chatId) {
+        const thread = document.createElement('li');
+        thread.textContent = `Chat ${chatId}`;
+        thread.dataset.chatId = chatId;
+        thread.addEventListener('click', () => {
+            currentChatId = chatId;
+            updateChatDisplay(chatId);
+        });
+        chatThreads.appendChild(thread);
+    }
+
+    // Update the chat area with messages
+    function updateChatDisplay(chatId) {
+        chatMessages.innerHTML = '';
+        chats[chatId].forEach((msg) => {
+            chatMessages.innerHTML += `<div>${msg.sender}: ${msg.text}</div>`;
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     // Poll for new messages every 2 seconds
     setInterval(fetchMessages, 2000);
 });
+
+
 
