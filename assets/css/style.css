@@ -786,7 +786,6 @@ details {
     color: #444; /* Set color for the content */
     margin-top: 10px; /* Add some margin */
   }
-
 .idea {
   position: absolute;
   width: 100px;
@@ -798,15 +797,10 @@ details {
   font-size: 14px;
   text-align: center;
   line-height: 1.4;
-  transition: all 0.5s ease-in-out; /* Slower transition */
-  cursor: pointer; /* Change cursor to pointer */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  
-  /* Adjust the center of the ideas */
-  /* You may need to fine-tune these values based on your design */
-  left: 50%; /* Adjust left position */
-  top: 50%; /* Adjust top position */
-  transform: translate(-50%, -45%); /* Center the idea */
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translate(-50%, -50%); /* Ensure proper centering */
 }
 
 .center-user {
@@ -819,14 +813,13 @@ details {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* Ensure center user is on top */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .center-user:hover {
-  transform: translate(-50%, -50%) scale(1.2); /* Apply scale without affecting position */
+  transform: translate(-50%, -50%) scale(1.2);
 }
-
 
   .container {
         display: flex;
