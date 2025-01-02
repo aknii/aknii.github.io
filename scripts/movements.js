@@ -91,6 +91,28 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
   window.addEventListener('beforeunload', removeRotationIntervals);
 }
 
+
+
+
+function getDeviceID() {
+    let deviceID = localStorage.getItem('deviceID');
+    
+    if (!deviceID) {
+        deviceID = generateUUID();
+        localStorage.setItem('deviceID', deviceID);
+    }
+    
+    return deviceID;
+}
+
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
     const popupBody = document.getElementById('telegram-body');
@@ -102,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls'; // Your bot token
     const TELEGRAM_CHAT_ID = '-1002463115933'; // Your chat ID
 
-    const deviceID = 'some_unique_device_id'; // Set your deviceID here
+    const deviceID = getDeviceID();
     let chatsByDeviceID = {}; // Structure: { chatId: { deviceID: messages } }
     let currentChatId = null;
     let currentDeviceID = deviceID; // Set initial deviceID
