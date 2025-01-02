@@ -7,7 +7,7 @@ plugins:
   
 header_pages:
   - author.md
-  - pikirler.md
+  - cosmetics.md
   - kurstar.md
   - jazbalar.md
   - projects.md
@@ -28,7 +28,7 @@ minima:
     # solarized-light	   Light variant of solarized color scheme.
     # solarized-dark	   Dark variant of solarized color scheme.
     # solarized	         Adaptive skin for solarized color scheme skins.
-  skin: solarized-dark	
+  skin: classic	
   
   social_links:
     - { platform: rss,       user_url: "https://t.me/akniyet.korea", title: "Telegram"  }  
