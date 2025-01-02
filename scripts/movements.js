@@ -1,6 +1,6 @@
 // Check if the current page is the index page
 if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-  const ideas = ['Корей гранты', 'TOPIK емтиханы', 'Косметика', 'Пікірлер', 'Мен туралы', 'Курстар', 'Посттар', 'Жобалар'];
+  const ideas = ['Корей гранты', 'TOPIK', 'Косметика', 'Кері байланыс', 'Мен туралы', 'Курстар', 'Посттар', 'Жобалар'];
   const links = ['gks', 'topik', 'cosmetology', 'feedbacks', 'author', 'courses', 'posts', 'jobalar'];
 
   const centerUser = document.querySelector('.center-user');
