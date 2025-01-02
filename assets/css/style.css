@@ -826,13 +826,13 @@ details {
 
 
 #telegram-popup {
-    width: 300px;
+    width: 400px;
     height: 40px; /* Only show header initially */
     border: 1px solid #ddd;
     background: #f9f9f9;
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    bottom: 30px;
     border-radius: 8px;
     font-family: Arial, sans-serif;
 }
