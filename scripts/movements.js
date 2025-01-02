@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('telegram-message');
     const sendButton = document.getElementById('telegram-send');
 
-    const TELEGRAM_BOT_TOKEN = 'MYBOTTOKEN'; // Your bot token
-    const TELEGRAM_CHAT_ID = '-10000123456789'; // Your chat ID
+    const TELEGRAM_BOT_TOKEN = '1527372948:AAFkM2KzVCr90LCUj8XUNQYW1IREuHTi1ls'; // Your bot token
+    const TELEGRAM_CHAT_ID = '-1002463115933'; // Your chat ID
 
     const deviceID = 'some_unique_device_id'; // Set your deviceID here
     let chatsByDeviceID = {}; // Structure: { chatId: { deviceID: messages } }
