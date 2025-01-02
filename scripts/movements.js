@@ -94,6 +94,8 @@ if (window.location.pathname === '/' || window.location.pathname === '/index.htm
 
 
 
+
+
 function getDeviceID() {
     let deviceID = localStorage.getItem('deviceID');
     
@@ -111,7 +113,6 @@ function generateUUID() {
         return v.toString(16);
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const popupHeader = document.getElementById('telegram-header');
@@ -175,39 +176,46 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch new messages from Telegram
     async function fetchMessages() {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to fetch messages');
+            }
+            const data = await response.json();
 
-        if (data.ok) {
-            data.result.forEach((update) => {
-                const chatId = update.message.chat.id;
-                const text = update.message.text;
-                const senderDeviceID = extractDeviceID(text); // Function to extract deviceID from message
+            if (data.ok) {
+                data.result.forEach((update) => {
+                    const chatId = update.message.chat.id;
+                    const text = update.message.text;
+                    const senderDeviceID = extractDeviceID(text); // Function to extract deviceID from message
 
-                if (!chatsByDeviceID[chatId]) {
-                    chatsByDeviceID[chatId] = {};
-                }
+                    if (!chatsByDeviceID[chatId]) {
+                        chatsByDeviceID[chatId] = {};
+                    }
 
-                if (!chatsByDeviceID[chatId][senderDeviceID]) {
-                    chatsByDeviceID[chatId][senderDeviceID] = [];
-                }
+                    if (!chatsByDeviceID[chatId][senderDeviceID]) {
+                        chatsByDeviceID[chatId][senderDeviceID] = [];
+                    }
 
-                // Store the received message under the deviceID
-                chatsByDeviceID[chatId][senderDeviceID].push({ sender: senderDeviceID, text });
+                    // Store the received message under the deviceID
+                    chatsByDeviceID[chatId][senderDeviceID].push({ sender: senderDeviceID, text });
 
-                if (currentChatId === chatId && currentDeviceID === senderDeviceID) {
-                    updateChatDisplay(chatId, senderDeviceID);
-                }
+                    if (currentChatId === chatId && currentDeviceID === senderDeviceID) {
+                        updateChatDisplay(chatId, senderDeviceID);
+                    }
 
-                lastUpdateId = update.update_id;
-            });
+                    lastUpdateId = update.update_id;
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
         }
     }
 
     // Extract deviceID from message (assuming deviceID is at the beginning)
     function extractDeviceID(text) {
         const match = text.match(/^(\S+):/); // Assuming deviceID is the first word in the message
-        return match ? match[1] : null;
+        return match ? match[1] : 'unknown';  // Return 'unknown' if deviceID is not found
     }
 
     // Add a new chat to the chat list for a specific deviceID
